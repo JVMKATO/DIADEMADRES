@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jardín Estrellado Dinámico</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            background-color: #0d1117; /* Fondo oscuro desde el inicio para mejor contraste */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 2s;
+        }
+
+        /* --- FORMULARIO --- */
+        #pantalla-ingreso {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.3);
+        }
+
+        input {
+            padding: 12px;
+            border: 2px solid #ff4d6d;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 30px;
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* --- ESCENA NOCTURNA --- */
+        #escena {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            background: radial-gradient(circle at center, #1a1a3a 0%, #000 100%);
+        }
+
+        #mensaje {
+            position: absolute;
+            top: 10%;
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px rgba(255,255,255,0.8);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .estrella {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: brillo infinite alternate ease-in-out;
+        }
+
+        /* --- EL JARDÍN --- */
+        #jardin {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 20px;
+        }
+
+        .flower-unit {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center;
+        }
+
+        .tallo {
+            width: 4px;
+            background: linear-gradient(to top, #1b4332, #2d6a4f);
+            height: 0;
+            transition: height 3s ease-out;
+            position: relative;
+        }
+
+        /* --- TIPOS DE FLORES (CSS) --- */
+        
+        /* 1. ROSA */
+        .tipo-rosa {
+            width: 40px; height: 40px;
+            background: #ff0a54;
+            border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        /* 2. TULIPÁN */
+        .tipo-tulipan {
+            width: 30px; height: 45px;
+            background: #ff85a1;
+            border-radius: 50% 50% 20% 20%;
+            position: relative;
+        }
+        .tipo-tulipan::after {
+            content: ''; position: absolute; top: 0; left: 25%;
+            width: 50%; height: 50%; background: #ff4d6d; border-radius: 50%;
+        }
+
+        /* 3. GIRASOL */
+        .tipo-girasol {
+            width: 50px; height: 50px;
+            background: #ffb703;
+            border-radius: 50%;
+            border: 4px dashed #fb8500;
+        }
+        .tipo-girasol::before {
+            content: ''; position: absolute; top: 25%; left: 25%;
+            width: 50%; height: 50%; background: #3d2622; border-radius: 50%;
+        }
+
+        .flower-head {
+            transform: scale(0);
+            transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: -5px;
+            z-index: 5;
+        }
+
+        @keyframes brillo {
+            from { opacity: 0.3; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-ingreso">
+        <h2>INGRESE SU NOMBRE POR FAVOR</h2>
+        <input type="text" id="nombreInput" placeholder="Escribe un nombre...">
+        <br>
+        <button onclick="plantarJardin()">Ingresar</button>
+    </div>
+
+    <div id="escena">
+        <h1 id="mensaje"></h1>
+        <div id="jardin"></div>
+    </div>
+
+    <script>
+        function plantarJardin() {
+            const nombre = document.getElementById('nombreInput').value;
+            if (!nombre) return alert("¡Necesito un nombre!");
+
+            document.getElementById('pantalla-ingreso').style.display = 'none';
+            const escena = document.getElementById('escena');
+            escena.style.display = 'flex';
+            document.getElementById('mensaje').innerText = `FELIZ DIA DE LA MADRE: ${nombre}`;
+
+            generarEstrellas(120);
+            generarFlores(25); // Ahora con más variedad
+        }
+
+        function generarEstrellas(cant) {
+            for (let i = 0; i < cant; i++) {
+                const estrella = document.createElement('div');
+                estrella.className = 'estrella';
+                const size = Math.random() * 3;
+                estrella.style.width = size + 'px';
+                estrella.style.height = size + 'px';
+                estrella.style.top = Math.random() * 80 + '%';
+                estrella.style.left = Math.random() * 100 + '%';
+                estrella.style.animationDelay = Math.random() * 3 + 's';
+                document.getElementById('escena').appendChild(estrella);
+            }
+        }
+
+        function generarFlores(cant) {
+            const jardin = document.getElementById('jardin');
+            const tipos = ['tipo-rosa', 'tipo-tulipan', 'tipo-girasol'];
+
+            for (let i = 0; i < cant; i++) {
+                const contenedor = document.createElement('div');
+                contenedor.className = 'flower-unit';
+                
+                // Variedad aleatoria
+                const tipoAzar = tipos[Math.floor(Math.random() * tipos.length)];
+                
+                const flor = document.createElement('div');
+                flor.className = `flower-head ${tipoAzar}`;
+                
+                const tallo = document.createElement('div');
+                tallo.className = 'tallo';
+
+                contenedor.appendChild(flor);
+                contenedor.appendChild(tallo);
+                jardin.appendChild(contenedor);
+
+                // Distribución y rotación
+                const offset = (i - cant/2) * 3.5; 
+                const rotacion = (i - cant/2) * 2 + (Math.random() * 10 - 5);
+                contenedor.style.left = `calc(50% + ${offset}vw)`;
+                contenedor.style.transform = `rotate(${rotacion}deg)`;
+
+                // Animación escalonada
+                const delay = i * 150;
+                const alturaVal = Math.random() * 150 + 100;
+
+                setTimeout(() => {
+                    tallo.style.height = alturaVal + 'px';
+                    flor.style.transform = 'scale(1)';
+                }, delay);
+            }
+        }
+    </script>
+</body>
+</html>
